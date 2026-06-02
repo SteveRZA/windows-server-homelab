@@ -151,5 +151,4 @@ The lab was validated from both the server and client side.
 In this initial lab, the domain controller also hosts the file shares. This was acceptable for learning purposes.
 - Add a second domain controller `DC02`
 - Add DHCP, backup, VLANs, and firewall integration
-# windows-server-homelab
-# windows-server-homelab
+
