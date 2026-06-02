@@ -148,22 +148,7 @@ The lab was validated from both the server and client side.
 
 ## Known Lab Limitation
 
-In this initial lab, the domain controller also hosts the file shares. This was acceptable for learning purposes, but the next lab will separate roles by adding a dedicated file server.
-
-Planned improvement:
-
-```text
-DC01 = Domain Controller / DNS / NTP
-FS01 = Dedicated File Server
-CLIENT01 = Domain-joined workstation
-```
-
-## Next Steps
-
-- Rebuild the lab as a clean baseline
-- Add a dedicated file server `FS01`
-- Move file shares from `DC01` to `FS01`
-- Implement a cleaner OU structure
+In this initial lab, the domain controller also hosts the file shares. This was acceptable for learning purposes.
 - Add a second domain controller `DC02`
 - Add DHCP, backup, VLANs, and firewall integration
 # windows-server-homelab
