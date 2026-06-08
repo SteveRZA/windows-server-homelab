@@ -240,7 +240,56 @@ The IT user did not receive HR or Finance mapped drives.
 
 ## Screenshots
 
-Screenshots are stored in the `screenshots/` folder and documented in `screenshot-index.md`.
+### FS01 static IP configuration
+![FS01 static IP configuration](screenshots/01-fs01-static-ip-config.png)
+
+### FS01 domain controller discovery
+![FS01 domain controller discovery](screenshots/02-fs01-domain-controller-discovery.png)
+
+### FS01 Group Policy result after domain join
+![FS01 Group Policy result after domain join](screenshots/03-fs01-gpresult-domain-policy-initial.png)
+
+### FS01 moved to Servers OU
+![FS01 moved to Servers OU](screenshots/04-fs01-gpresult-server-ou-domain-admin.png)
+
+### File Server role installed
+![File Server role installed](screenshots/05-fs01-file-server-role-installed.png)
+
+### Share folder structure on data disk
+![Share folder structure on data disk](screenshots/06-fs01-share-folder-structure.png)
+
+### AD permission groups
+![AD permission groups](screenshots/07-ad-file-server-permission-groups.png)
+
+### Group nesting example
+![Group nesting example](screenshots/08-permission-group-nesting-example.png)
+
+### NTFS permissions on IT folder
+![NTFS permissions on IT folder](screenshots/09-ntfs-permissions-it-folder-advanced.png)
+
+### SMB share permissions wizard
+![SMB share permissions wizard](screenshots/10-smb-share-permissions-it-wizard.png)
+
+### SMB shares created on FS01
+![SMB shares created on FS01](screenshots/11-all-smb-shares-created.png)
+
+### IT user access to IT share
+![IT user access to IT share](screenshots/12-client-it-user-access-it-share.png)
+
+### IT user denied access to HR share
+![IT user denied access to HR share](screenshots/13-client-it-user-denied-hr-share.png)
+
+### GPO drive map configuration
+![GPO drive map configuration](screenshots/14-gpo-it-drive-map-item-level-targeting.png)
+
+### GPO item-level targeting
+![GPO item-level targeting](screenshots/15-gpo-it-drive-map-targeting.png)
+
+### GPO applied to IT user
+![GPO applied to IT user](screenshots/16-gpresult-mapped-drives-gpo-applied.png)
+
+### IT user mapped drives
+![IT user mapped drives](screenshots/17-client01-it-user-mapped-drives.png)
 
 ---
 
