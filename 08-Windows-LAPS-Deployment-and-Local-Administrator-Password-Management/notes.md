@@ -58,3 +58,17 @@ Group Policy Preferences can no longer set passwords for local users (the field 
 greyed out) because Microsoft disabled it for security reasons in MS14-025. This
 is why the custom-account approach needed an initial password it could not supply,
 and why the built-in account was the simpler path on this build.
+
+## Rotation is pull-based, not push
+
+Expiring a password in AD (via `Set-LapsADPasswordExpirationTime` or "Expire now")
+does not notify the machine. Each machine has a background task that wakes roughly
+every hour, reads the expiration time, and rotates if it has passed. So a forced
+expiration does not change the password instantly - it changes on the machine's
+next cycle, reboot, or when `Invoke-LapsPolicyProcessing` is run locally. This is
+by design (the machine pulls; the DC never pushes).
+
+Two related points learned from the event log: the managed account must be enabled
+first (Event 10067 warns when it is disabled), and post-authentication actions can
+schedule a rotation a set number of hours after the account is used to log in
+(Event 10041), which bounds how long a retrieved password stays valid.

@@ -10,3 +10,7 @@
 | `06-laps-gpo-settings-configured.png` | LAPS GPO with backup directory, administrator account name, and password settings all Enabled |
 | `07-laps-password-retrieved-aduc-gui.png` | LAPS tab in ADUC showing CLIENT02's managed account name, current password, and expiration date |
 | `08-laps-password-retrieved-powershell.png` | `Get-LapsADPassword` output for CLIENT01 and CLIENT02, each with a unique password, EncryptedPassword source, and successful decryption |
+| `09-rotation-before.png` | `Get-LapsADPassword` before rotation - current password and update time |
+| `10-rotation-expire-triggered.png` | `Set-LapsADPasswordExpirationTime` forcing expiration from the DC (`Status: PasswordReset`) |
+| `11-rotation-invoke-processing.png` | `Invoke-LapsPolicyProcessing` run on the client to process the policy immediately |
+| `12-rotation-after.png` | `Get-LapsADPassword` after rotation - new password and new update timestamp (before/after proof) |

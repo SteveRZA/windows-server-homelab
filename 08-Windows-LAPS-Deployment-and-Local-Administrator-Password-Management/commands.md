@@ -89,6 +89,60 @@ Shows which machines have a current password and which have not rotated.
 
 ---
 
+## Password rotation (day-2 operations)
+
+### Force rotation from the DC (remote, targeted)
+
+```powershell
+Set-LapsADPasswordExpirationTime -Identity CLIENT02
+```
+
+Marks the password expired (`Status: PasswordReset`). The machine rotates on its
+next cycle. `Reset-LapsPassword` does NOT accept `-Identity` - it is local-only.
+
+### Speed up processing on the machine
+
+```powershell
+Invoke-LapsPolicyProcessing
+```
+
+Forces the machine to process the policy now instead of waiting for the hourly
+background task. Requires admin rights, run on the machine.
+
+### Immediate local rotation (on the machine itself)
+
+```powershell
+Reset-LapsPassword
+```
+
+Rotates the local machine's own password immediately, regardless of expiration.
+Intended for rare cases such as a suspected breach.
+
+---
+
+## Recovery
+
+### Retrieve current and previous passwords (history)
+
+```powershell
+Get-LapsADPassword -Identity CLIENT02 -AsPlainText -IncludeHistory
+```
+
+First recovery tool if the current password does not match the machine. Read it
+from the DC, then type it at the client login screen as `.\Administrator`.
+
+### LAPS event log (diagnostics on the machine)
+
+```powershell
+Get-WinEvent -LogName "Microsoft-Windows-LAPS/Operational" -MaxEvents 15 |
+  Select TimeCreated, Id, LevelDisplayName, Message | Format-List
+```
+
+Shows policy processing, rotation attempts, and warnings (e.g. account disabled,
+missing schema attribute).
+
+---
+
 ## Troubleshooting commands
 
 ### Check FSMO / replication (used to diagnose the schema failure)

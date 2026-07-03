@@ -325,10 +325,110 @@ to the built-in Administrator.
 
 ---
 
+## Part 7 - Password Rotation and Recovery Operations
+
+Deploying LAPS is only half the job; day-to-day operations require knowing how to
+force a rotation and how to recover access when something goes wrong. This part
+documents those procedures.
+
+### How rotation actually works (pull, not push)
+
+A key point that is easy to misunderstand: expiring a password in AD does **not**
+push a change to the machine. The model is pull-based. Each machine runs a LAPS
+background task roughly every hour that reads the stored expiration time, and if
+it has passed, the machine generates a new password and writes it to AD. So
+"Expire now" in AD only marks the password as expired - the actual rotation
+happens on the machine's next cycle (or reboot, or a manual trigger).
+
+### Forcing a rotation
+
+There are three supported ways to rotate early, differing by where they run:
+
+| Method | Where it runs | Effect |
+|---|---|---|
+| `Set-LapsADPasswordExpirationTime -Identity <PC>` | DC (remote) | Marks the password expired; machine rotates on its next cycle |
+| "Expire now" button on the ADUC LAPS tab | DC (remote, GUI) | Same as above, via GUI |
+| `Reset-LapsPassword` | On the machine itself (local) | Immediate rotation, regardless of expiration |
+
+To avoid waiting for the hourly cycle after expiring from the DC, run
+`Invoke-LapsPolicyProcessing` on the machine to process the policy immediately.
+
+Note: `Reset-LapsPassword` does **not** take an `-Identity` parameter - it only
+rotates the local machine's own password. To target a remote machine from the DC,
+use `Set-LapsADPasswordExpirationTime` instead.
+
+### Rotation validated (before / after)
+
+The rotation flow was validated end to end.
+
+Before - current password and update time:
+
+![Rotation before](screenshots/09-rotation-before.png)
+
+Expiration forced from the DC (`Status: PasswordReset`):
+
+![Expire triggered](screenshots/10-rotation-expire-triggered.png)
+
+Policy processing forced on the client:
+
+![Invoke policy processing](screenshots/11-rotation-invoke-processing.png)
+
+After - a **new** password and a new update timestamp, confirming the rotation:
+
+![Rotation after](screenshots/12-rotation-after.png)
+
+### Recovery: getting into a machine when the current password fails
+
+The scenario: you are in front of a machine, need local administrator access, but
+the LAPS password shown in AD does not work (for example the machine rotated
+while offline and never synced back).
+
+First line of recovery is the **password history**. LAPS keeps previous passwords,
+so one of them likely matches what the machine has locally:
+
+```powershell
+Get-LapsADPassword -Identity CLIENT02 -AsPlainText -IncludeHistory
+```
+
+You do not need a command prompt on the client to do this - you read the password
+from the DC (or your own machine) first, then type it at the client's login screen
+as `.\Administrator`.
+
+If no stored password works at all (the machine has a password AD never received),
+LAPS cannot help and you fall back to an **offline reset via boot media** (boot
+the Windows ISO, open a command prompt, reset the local Administrator) - the same
+technique used for DC recovery. This is the last resort.
+
+### Operational notes surfaced by the LAPS event log
+
+The LAPS event log (`Microsoft-Windows-LAPS/Operational`) surfaced two useful
+items during testing:
+
+- **Event 10067** - "The configured local account is currently disabled." This
+  confirmed that the managed account must be enabled before LAPS can manage it.
+- **Event 10108** - the `msLAPS-CurrentPasswordVersion` attribute is missing from
+  the schema. This attribute supports rollback (torn-state) detection. All primary
+  scenarios work without it, but re-running the latest `Update-LapsADSchema`
+  (from a newer build) is recommended to add it.
+
+Also visible: **Event 10041** shows LAPS scheduling a post-authentication rotation
+after the managed account was used to log in, based on the configured
+24-hour grace period (`Post authentication actions: 0x3`).
+
+---
+
 ## What I Learned
 
 - LAPS manages the **password** of an existing account - it does not create or
   enable the account (on this Server 2019 build).
+- Rotation is **pull-based**: expiring a password in AD does not push to the
+  machine; the machine rotates on its next hourly cycle, reboot, or when forced
+  with `Invoke-LapsPolicyProcessing`.
+- `Reset-LapsPassword` is local-only (no `-Identity`); remote rotation is done
+  from the DC with `Set-LapsADPasswordExpirationTime`.
+- Password **history** (`-IncludeHistory`) is the first recovery tool when the
+  current password does not match the machine; offline media reset is the last
+  resort.
 - The GPP password field is blocked by MS14-025; you cannot set a password there.
   This blocks the "custom account with initial password" approach on older LAPS
   builds.

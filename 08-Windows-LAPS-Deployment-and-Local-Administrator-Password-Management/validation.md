@@ -10,6 +10,10 @@
 | LAPS GPO settings configured | Success | `06-laps-gpo-settings-configured.png` |
 | LAPS password retrieved from AD (GUI / ADUC) | Success | `07-laps-password-retrieved-aduc-gui.png` |
 | LAPS password retrieved from AD (PowerShell, both clients) | Success | `08-laps-password-retrieved-powershell.png` |
+| Rotation - password before | Informational | `09-rotation-before.png` |
+| Rotation - expiration forced from DC | Success | `10-rotation-expire-triggered.png` |
+| Rotation - policy processing forced on client | Success | `11-rotation-invoke-processing.png` |
+| Rotation - new password after (before/after proof) | Success | `12-rotation-after.png` |
 
 ## Final Validation Summary
 
