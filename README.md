@@ -45,7 +45,11 @@ Every lab is a standalone write-up with the same structure:
 
 ## Why this lab exists
 
-A shared local administrator password, an untested backup, or FSMO roles nobody can account for are the kind of problems that stay invisible until something breaks. Each lab here started from a question I could not answer confidently from documentation alone — so the write-ups include the failures, not just the working end state.
+This lab was built primarily to learn. Reading about Active Directory, Group Policy or LAPS is not the same as building them, breaking them, and having to work out why something failed at 11pm on a Sunday.
+
+Each lab started from a question I could not answer confidently from documentation alone — so the write-ups include the mistakes, the errors and the dead ends, not just the working end state. That is the part that taught me the most, and it is the part most write-ups leave out.
+
+The side effect is that the work carried over: the LAPS build in Lab 08 gave me the confidence and the documented procedure to run the same deployment in a live environment.
 
 ---
 
